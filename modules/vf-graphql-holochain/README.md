@@ -19,7 +19,7 @@ const client = new ApolloClient({
 })
 ```
 
-There are other use-cases and examples provided in the `example` folder at the root of this repository.
+There are other use-cases and examples provided in the `apps` folder at the root of this repository.
 
 ## Important files
 

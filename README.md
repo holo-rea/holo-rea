@@ -28,8 +28,9 @@ HoloREA is built to align with the [Open App Ecosystem](https://github.com/open-
 
 ## Repository structure
 
-- `example/` is filled with end-user applications built on the HoloREA framework.
+- `apps/` is filled with end-user applications built on the HoloREA framework.
 	- `holorea-graphql-explorer/` is a [GraphiQL](https://github.com/graphql/graphiql) interface to the system with some added [additions to assist with comprehension](https://github.com/OneGraph/graphiql-explorer-example). Wired up to the development DNAs by default&mdash; super handy for testing and getting to know the ValueFlows [data structure](https://github.com/valueflows/vf-graphql/).
+	- `kanban-task-board/` implements an agile project management board for managing tasks, commitments and tracking effort.
 - [`happs/`](happs/README.md) contains subdirectories corresponding to separate Holochain app DNA packages, which expose their data as independent, isolated DHTs. Each DNA is composed of multiple *zomes* which describe semi-independent bits of functionality within that app DNA.
 - `lib/` contains library code that is used by the various hApps (Holochain apps). Note that shared code is necessary to facilitate sharing of data between DHTs, as the de/serialisation logic is defined by Rust structs- hence this separation.
 	- `hdk_graph_helpers/` is the result of abstracting away common functionality used in zome callback handlers to reduce boilerplate.

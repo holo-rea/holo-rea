@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "modules/vf-graphql-holochain",
-    "example/holorea-graphql-explorer",
+    "apps/holorea-graphql-explorer",
+    "apps/kanban-task-board",
     "test"
   ],
   "version": "0.0.1",
@@ -19,7 +20,7 @@
     "build:dna_plan": "cd happs/planning && hc package",
     "build:graphql-adapter": "cd modules/vf-graphql-holochain && npm run build",
     "dht": "holochain -c ./conductor-config.toml",
-    "ui": "cd example/holorea-graphql-explorer && npm start",
+    "ui": "cd apps/holorea-graphql-explorer && npm start",
     "dev": "npm-run-all --parallel watch dev:graphql-adapter ui",
     "dev:graphql-adapter": "cd modules/vf-graphql-holochain && npm run dev",
     "watch": "npm-watch",
@@ -27,7 +28,7 @@
     "test:unit": "cargo test",
     "test:integration": "cd test && npm test",
     "clean": "npm-run-all --parallel clean:modules clean:build",
-    "clean:modules": "rm -Rf node_modules; rm -Rf test/node_modules; rm -Rf example/holorea-graphql-explorer/node_modules; rm -Rf modules/vf-graphql-holochain/node_modules",
+    "clean:modules": "rm -Rf node_modules; rm -Rf test/node_modules; rm -Rf apps/**/node_modules; rm -Rf modules/**/node_modules",
     "clean:build": "nix-shell --run hn-flush"
   },
   "watch": {
