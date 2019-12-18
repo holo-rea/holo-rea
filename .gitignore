@@ -5,6 +5,9 @@ bundle.json
 
 node_modules/
 
+# React app build files
+/apps/**/build/
+
 # Rust build files
 /target/
 /happs/**/dist/
