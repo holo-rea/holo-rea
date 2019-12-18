@@ -61,6 +61,11 @@ Once installation has completed you can run `nix-shell` followed by `npm start` 
 - Holochain DNA HTTP interface at `http://localhost:4000`
 - Holochain DNA websocket RPC interface at `ws://localhost:4001`
 - TypeScript compiler daemon for rebuilding `vf-graphql-holochain` browser module upon changes
+- Applications that interface with the Holochain DNAs:
+	- `http://localhost:3000` - GraphQL explorer
+	- `http://localhost:3001` - Kanban project management board
+
+See the toplevel `package.json` scripts section for details on how to execute these services and run them on alternative ports.
 
 ## Developing
 
