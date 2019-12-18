@@ -21,6 +21,7 @@
     "faucet": "^0.0.1",
     "get-port": "5.0.0",
     "graphql": "14.5.8",
+    "graphql-tag-pluck": "^0.8.7",
     "is-function": "^1.0.1",
     "json3": "^3.3.2",
     "n3h": "github:holochain/n3h#0.0.20-alpha",
