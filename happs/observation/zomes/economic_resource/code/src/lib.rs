@@ -1,7 +1,6 @@
 #![feature(proc_macro_hygiene)]
 // :TODO: documentation
 
-#[macro_use]
 extern crate hdk;
 extern crate serde;
 #[macro_use]
@@ -9,16 +8,11 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate hdk_graph_helpers;
 extern crate vf_observation;
+extern crate vf_specification;
 
 mod economic_resource_requests;
 
-use hdk::{
-    entry_definition::ValidatingEntryType,
-    error::ZomeApiResult,
-    holochain_persistence_api::cas::content::Address,
-    holochain_core_types::dna::entry_types::Sharing,
-    
-};
+use hdk::prelude::*;
 use hdk_proc_macros::zome;
 
 use vf_observation::type_aliases::{
@@ -43,9 +37,12 @@ use vf_observation::identifiers::{
     RESOURCE_CONTAINED_IN_LINK_TYPE,
     RESOURCE_AFFECTED_BY_EVENT_LINK_TYPE,
     EVENT_BASE_ENTRY_TYPE,
+    RESOURCE_CONFORMS_TO_LINK_TYPE,
 };
-
-// Zome entry type wrappers
+use vf_specification::identifiers::{
+    ECONOMIC_RESOURCE_SPECIFICATION_BASE_ENTRY_TYPE,
+    RESOURCE_SPECIFICATION_CONFORMING_RESOURCE_LINK_TYPE,
+};
 
 #[zome]
 mod rea_economic_resource_zome {
@@ -58,7 +55,6 @@ mod rea_economic_resource_zome {
     #[validate_agent]
     pub fn validate_agent(validation_data: EntryValidationData::<AgentId>) {
         Ok(())
-
     }
 
     #[entry_def]
@@ -70,7 +66,24 @@ mod rea_economic_resource_zome {
             validation_package: || {
                 hdk::ValidationPackageDefinition::Entry
             },
-            validation: |_validation_data: hdk::EntryValidationData<Entry>| {
+            validation: |validation_data: hdk::EntryValidationData<Entry>| {
+                // CREATE
+                if let EntryValidationData::Create{ entry, validation_data: _ } = validation_data {
+                    let record: Entry = entry;
+                    return record.validate();
+                }
+
+                // UPDATE
+                if let EntryValidationData::Modify{ new_entry, old_entry: _, old_entry_header: _, validation_data: _ } = validation_data {
+                    let record: Entry = new_entry;
+                    return record.validate();
+                }
+
+                // DELETE
+                // if let EntryValidationData::Delete{ old_entry, old_entry_header: _, validation_data: _ } = validation_data {
+
+                // }
+
                 Ok(())
             }
         )
@@ -123,6 +136,44 @@ mod rea_economic_resource_zome {
                 to!(
                     EVENT_BASE_ENTRY_TYPE,
                     link_type: RESOURCE_AFFECTED_BY_EVENT_LINK_TYPE,
+                    validation_package: || {
+                        hdk::ValidationPackageDefinition::Entry
+                    },
+                    validation: | _validation_data: hdk::LinkValidationData| {
+                        Ok(())
+                    }
+                ),
+                to!(
+                    ECONOMIC_RESOURCE_SPECIFICATION_BASE_ENTRY_TYPE,
+                    link_type: RESOURCE_CONFORMS_TO_LINK_TYPE,
+                    validation_package: || {
+                        hdk::ValidationPackageDefinition::Entry
+                    },
+                    validation: | _validation_data: hdk::LinkValidationData| {
+                        Ok(())
+                    }
+                )
+            ]
+        )
+    }
+
+    // :TODO: move to separate zome
+    #[entry_def]
+    fn resource_specification_base_entry_def() -> ValidatingEntryType {
+        entry!(
+            name: ECONOMIC_RESOURCE_SPECIFICATION_BASE_ENTRY_TYPE,
+            description: "Base anchor for external ResourceSpecification records to provide lookup functionality",
+            sharing: Sharing::Public,
+            validation_package: || {
+                hdk::ValidationPackageDefinition::Entry
+            },
+            validation: |_validation_data: hdk::EntryValidationData<Address>| {
+                Ok(())
+            },
+            links: [
+                to!(
+                    RESOURCE_BASE_ENTRY_TYPE,
+                    link_type: RESOURCE_SPECIFICATION_CONFORMING_RESOURCE_LINK_TYPE,
                     validation_package: || {
                         hdk::ValidationPackageDefinition::Entry
                     },
